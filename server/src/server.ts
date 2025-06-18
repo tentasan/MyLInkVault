@@ -22,9 +22,7 @@ const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:5173";
 app.use(helmet());
 app.use(
   cors({
-    origin: ["http://localhost:5173",
-      "http://localhost:8080",
-      "https://my-l-ink-vault.vercel.app"],
+    origin: [],
     credentials: true,
   }),
 );
