@@ -21,11 +21,20 @@ const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:5173";
 // ✅ CORRECTED CORS SETUP
 app.use(
   cors({
-    origin: [FRONTEND_URL, "https://my-l-ink-vault.vercel.app"],
+    origin: function (origin, callback) {
+      const allowedOrigins = [
+        "https://my-l-ink-vault.vercel.app",
+        "http://localhost:5173", // for local dev
+      ];
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
   })
 );
-
 // Middleware
 app.use(helmet());
 app.use(morgan("combined"));
