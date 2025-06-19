@@ -98,7 +98,7 @@ async function startServer() {
       console.log(`
 🚀 MyLinkVault API is live!
 
-📍 URL: http://localhost:${PORT}
+📍 URL: ${process.env.BACKEND_URL}
 🌐 CORS: Allowed from ${FRONTEND_URL}
 🗄 DB: Connected
 `);
