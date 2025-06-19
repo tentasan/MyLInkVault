@@ -174,7 +174,7 @@ const Connections = () => {
     try {
       setActionLoading("github");
       sessionStorage.setItem("githubAuthRedirect", "/connections");
-      window.location.href = "${import.meta.env.VITE_API_URL}/api/auth/oauth/github";
+      window.location.href = "${import.meta.env.VITE_API_URL}/auth/oauth/github";
     } catch (error) {
       toast.error("Failed to initiate GitHub OAuth");
       setActionLoading(null);

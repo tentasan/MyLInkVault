@@ -131,7 +131,7 @@ const Login = () => {
       );
 
       // Direct redirect to our backend OAuth endpoint which will redirect to GitHub
-     window.location.href = "https://mylinkvault.onrender.com/api/auth/oauth/github";
+     window.location.href = "https://mylinkvault.onrender.com/auth/oauth/github";
 
     } catch (err: any) {
       console.error("GitHub OAuth error:", err);
