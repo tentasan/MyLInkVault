@@ -18,21 +18,36 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:5173";
 
-// ✅ CORRECTED CORS SETUP
+// ✅ Allowed origins (production + preview)
+const allowedOrigins = [
+  "https://my-l-ink-vault.vercel.app", // Production
+  /\.vercel\.app$/                     // Any preview Vercel deployment
+];
+
+// ✅ CORS setup
 app.use(
   cors({
-    origin: ["https://my-l-ink-vault.vercel.app"],
-    credentials: true,
-  }),
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true); // allow Postman, curl etc.
+      const isAllowed = allowedOrigins.some((o) =>
+        typeof o === "string" ? o === origin : o.test(origin)
+      );
+      isAllowed
+        ? callback(null, true)
+        : callback(new Error("❌ Not allowed by CORS"));
+    },
+    credentials: true,
+  })
 );
-// Middleware
+
+// ✅ Middleware
 app.use(helmet());
 app.use(morgan("combined"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.set("trust proxy", true); // For Render to get real IP addresses
+app.set("trust proxy", true);
 
-// ✅ Health check
+// ✅ Health check route
 app.get("/health", (req, res) => {
   res.json({
     status: "healthy",
@@ -79,7 +94,7 @@ app.use(
   }
 );
 
-// ✅ 404 handler
+// ✅ 404 fallback
 app.use("*", (req, res) => {
   res.status(404).json({
     error: "Route not found",
@@ -96,12 +111,12 @@ async function startServer() {
 
     app.listen(PORT, () => {
       console.log(`
+✅ Database connected successfully
 🚀 MyLinkVault API is live!
-
 📍 URL: ${process.env.BACKEND_URL}
 🌐 CORS: Allowed from ${FRONTEND_URL}
 🗄 DB: Connected
-`);
+      `);
     });
   } catch (error) {
     console.error("❌ Failed to start server:", error);
@@ -114,7 +129,6 @@ process.on("SIGINT", () => {
   console.log("\n🛑 Gracefully shutting down...");
   process.exit(0);
 });
-
 process.on("SIGTERM", () => {
   console.log("\n🛑 Gracefully shutting down...");
   process.exit(0);
