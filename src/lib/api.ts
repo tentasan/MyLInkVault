@@ -112,12 +112,12 @@ export const authAPI = {
   },
 
   getGitHubAuthUrl: async () => {
-    const response = await api.get("api/auth/oauth/github");
+    const response = await api.get("/api/auth/oauth/github");
     return response.data;
   },
 
   githubCallback: async (code: string) => {
-    const response = await api.post("api/auth/oauth/github/callback", { code });
+    const response = await api.post("/api/auth/oauth/github/callback", { code });
     return response.data;
   },
 
