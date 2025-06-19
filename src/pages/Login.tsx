@@ -131,7 +131,7 @@ const Login = () => {
       );
 
       // Direct redirect to our backend OAuth endpoint which will redirect to GitHub
- window.location.href = `${import.meta.env.VITE_API_URL}/auth/oauth/github`;
+ window.location.href = `${import.meta.env.VITE_API_URL}/api/auth/oauth/github`;
 
     } catch (err: any) {
       console.error("GitHub OAuth error:", err);
