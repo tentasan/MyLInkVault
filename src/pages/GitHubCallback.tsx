@@ -5,6 +5,7 @@ import { CheckCircle, XCircle, RefreshCw } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { toast } from "sonner";
 
+
 const GitHubCallback = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -50,7 +51,7 @@ const GitHubCallback = () => {
 
         // Fetch user data with the new token to update the auth context
         try {
-          const response = await fetch("http://localhost:3001/api/auth/me", {
+          const response = await fetch("https://mylinkvault.onrender.com/api/auth/me", {
             headers: {
               Authorization: `Bearer ${token}`,
             },
