@@ -34,7 +34,7 @@ export interface GitHubUserRepos {
 export function getGitHubAuthURL(): string {
   const params = new URLSearchParams({
     client_id: GITHUB_CLIENT_ID,
-redirect_uri: `${process.env.FRONTEND_URL}/api/auth/oauth/github/callback`,
+redirect_uri: `${process.env.FRONTEND_URL}/auth/oauth/github/callback`,
     scope: "user:email,read:user",
     state: crypto.randomUUID(), // You might want to store this for validation
   });
