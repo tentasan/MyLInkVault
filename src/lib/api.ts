@@ -112,7 +112,7 @@ export const authAPI = {
   },
 
   getGitHubAuthUrl: async () => {
-    const response = await api.get("/auth/oauth/github");
+    const response = await api.get("api/auth/oauth/github");
     return response.data;
   },
 
