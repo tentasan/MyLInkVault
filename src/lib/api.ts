@@ -117,7 +117,7 @@ export const authAPI = {
   },
 
   githubCallback: async (code: string) => {
-    const response = await api.post("/auth/oauth/github/callback", { code });
+    const response = await api.post("api/auth/oauth/github/callback", { code });
     return response.data;
   },
 
