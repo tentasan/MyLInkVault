@@ -65,9 +65,28 @@ const Settings = () => {
     setPasswordData({ ...passwordData, [field]: value });
   };
 
- const handleSaveProfile = async () => {
+const handleSaveProfile = async () => {
   try {
-    await settingsAPI.updateProfile(profileData);
+    const {
+      firstName,
+      lastName,
+      bio,
+      website,
+      location,
+      title,
+      company,
+    } = profileData;
+
+    await settingsAPI.updateProfile({
+      firstName,
+      lastName,
+      bio,
+      website,
+      location,
+      title,
+      company,
+    });
+
     toast.success("Profile updated!");
   } catch (err) {
     toast.error("Failed to update profile");
