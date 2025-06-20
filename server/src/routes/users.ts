@@ -245,5 +245,23 @@ router.get(
     }
   },
 );
+// Delete account (protected)
+router.delete(
+  "/delete",
+  authenticateToken,
+  async (req: Request, res: Response): Promise<void> => {
+    try {
+      const userId = req.user!.id;
+
+      // Optionally delete associated data like analytics, connections, etc.
+      await db.delete(users).where(eq(users.id, userId));
+
+      res.json({ message: "Account deleted successfully" });
+    } catch (error) {
+      console.error("Delete account error:", error);
+      res.status(500).json({ error: "Failed to delete account" });
+    }
+  },
+);
 
 export default router;

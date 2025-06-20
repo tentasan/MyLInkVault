@@ -231,6 +231,7 @@ export const analyticsAPI = {
     return response.data;
   },
 };
+
 export const settingsAPI = {
   updateProfile: async (data: any) => {
     const response = await api.put("/users/profile", data);
@@ -246,6 +247,11 @@ export const settingsAPI = {
     const response = await api.put("/users/password", data);
     return response.data;
   },
+  deleteAccount: async () => {
+    const response = await api.delete("/users");
+    return response.data;
+  }
+  
 };
 
 

@@ -91,6 +91,28 @@ const handleChangePassword = async () => {
     toast.error("Failed to change password");
   }
 };
+const handleDeleteAccount = async () => {
+  const confirmed = window.confirm(
+    "Are you sure you want to permanently delete your account? This action cannot be undone.",
+  );
+
+  if (!confirmed) return;
+
+  try {
+    await settingsAPI.deleteAccount();
+    toast.success("Your account has been deleted");
+
+    // Clear auth and user data
+    localStorage.removeItem("authToken");
+    localStorage.removeItem("user");
+
+    // Redirect to homepage
+    window.location.href = "/";
+  } catch (err) {
+    toast.error("Failed to delete account");
+    console.error("Delete account error:", err);
+  }
+};
 
   return (
     <div className="min-h-screen bg-gradient-brand">
@@ -402,10 +424,10 @@ const handleChangePassword = async () => {
                     Permanently delete your account and all data
                   </p>
                 </div>
-                <Button variant="destructive" size="sm">
-                  <Trash2 className="h-4 w-4 mr-2" />
-                  Delete Account
-                </Button>
+                <Button variant="destructive" size="sm" onClick={handleDeleteAccount}>
+  <Trash2 className="h-4 w-4 mr-2" />
+  Delete Account
+</Button>
               </div>
             </CardContent>
           </Card>
