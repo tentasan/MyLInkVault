@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import Navigation from "../components/Navigation";
@@ -10,7 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from "../components/ui/card";
-import { settingsAPI } from "@/lib/api";
+import { settingsAPI, userAPI } from "@/lib/api";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { Textarea } from "../components/ui/textarea";
@@ -52,6 +52,35 @@ const Settings = () => {
     confirmPassword: "",
   });
 
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const data = await userAPI.getProfile();
+        setProfileData({
+          firstName: data.firstName || "",
+          lastName: data.lastName || "",
+          email: data.email || "",
+          bio: data.bio || "",
+          website: data.website || "",
+          location: data.location || "",
+          title: data.title || "",
+          company: data.company || "",
+          avatar: data.avatarUrl || "",
+        });
+
+        setPrivacySettings({
+          publicProfile: data.publicProfile ?? true,
+          showEmail: data.showEmail ?? false,
+          showLocation: data.showLocation ?? true,
+        });
+      } catch (err) {
+        toast.error("Failed to load profile data");
+      }
+    };
+
+    fetchProfile();
+  }, []);
+
   const handleProfileChange = (field: string, value: string) => {
     setProfileData({ ...profileData, [field]: value });
   };
@@ -76,16 +105,20 @@ const Settings = () => {
         company,
       } = profileData;
 
-      await settingsAPI.updateProfile({
-        firstName,
-        lastName,
-        bio,
-        website,
-        location,
-        title,
-        company,
-      });
+      // Only send fields that have values (non-empty strings)
+      const updatePayload = Object.fromEntries(
+        Object.entries({
+          firstName,
+          lastName,
+          bio,
+          website,
+          location,
+          title,
+          company,
+        }).filter(([, value]) => value !== "")
+      );
 
+      await settingsAPI.updateProfile(updatePayload);
       toast.success("Profile updated!");
     } catch (err) {
       toast.error("Failed to update profile");
@@ -127,7 +160,6 @@ const Settings = () => {
       console.error("Delete account error:", err);
     }
   };
-
   return (
     <div className="min-h-screen bg-gradient-brand">
       <Navigation />
