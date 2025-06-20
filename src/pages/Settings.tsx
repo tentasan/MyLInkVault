@@ -22,7 +22,6 @@ import {
   Camera,
   Save,
   Eye,
-  EyeOff,
   MapPin,
   Mail,
   Trash2,
@@ -65,78 +64,73 @@ const Settings = () => {
     setPasswordData({ ...passwordData, [field]: value });
   };
 
-const handleSaveProfile = async () => {
-  try {
-    const {
-      firstName,
-      lastName,
-      bio,
-      website,
-      location,
-      title,
-      company,
-    } = profileData;
+  const handleSaveProfile = async () => {
+    try {
+      const {
+        firstName,
+        lastName,
+        bio,
+        website,
+        location,
+        title,
+        company,
+      } = profileData;
 
-    await settingsAPI.updateProfile({
-      firstName,
-      lastName,
-      bio,
-      website,
-      location,
-      title,
-      company,
-    });
+      await settingsAPI.updateProfile({
+        firstName,
+        lastName,
+        bio,
+        website,
+        location,
+        title,
+        company,
+      });
 
-    toast.success("Profile updated!");
-  } catch (err) {
-    toast.error("Failed to update profile");
-  }
-};
+      toast.success("Profile updated!");
+    } catch (err) {
+      toast.error("Failed to update profile");
+    }
+  };
 
-const handleSavePrivacy = async () => {
-  try {
-    await settingsAPI.updatePrivacy(privacySettings);
-    toast.success("Privacy settings saved!");
-  } catch (err) {
-    toast.error("Failed to save privacy settings");
-  }
-};
+  const handleSavePrivacy = async () => {
+    try {
+      await settingsAPI.updatePrivacy(privacySettings);
+      toast.success("Privacy settings saved!");
+    } catch (err) {
+      toast.error("Failed to save privacy settings");
+    }
+  };
 
-const handleChangePassword = async () => {
-  try {
-    await settingsAPI.changePassword(passwordData);
-    toast.success("Password changed!");
-  } catch (err) {
-    toast.error("Failed to change password");
-  }
-};
-const handleDeleteAccount = async () => {
-  const confirmed = window.confirm(
-    "Are you sure you want to permanently delete your account? This action cannot be undone.",
-  );
+  const handleChangePassword = async () => {
+    try {
+      await settingsAPI.changePassword(passwordData);
+      toast.success("Password changed!");
+    } catch (err) {
+      toast.error("Failed to change password");
+    }
+  };
 
-  if (!confirmed) return;
+  const handleDeleteAccount = async () => {
+    const confirmed = window.confirm(
+      "Are you sure you want to permanently delete your account? This action cannot be undone."
+    );
+    if (!confirmed) return;
 
-  try {
-    await settingsAPI.deleteAccount();
-    toast.success("Your account has been deleted");
-
-    // Clear auth and user data
-    localStorage.removeItem("authToken");
-    localStorage.removeItem("user");
-
-    // Redirect to homepage
-    window.location.href = "/";
-  } catch (err) {
-    toast.error("Failed to delete account");
-    console.error("Delete account error:", err);
-  }
-};
+    try {
+      await settingsAPI.deleteAccount();
+      toast.success("Your account has been deleted");
+      localStorage.removeItem("authToken");
+      localStorage.removeItem("user");
+      window.location.href = "/";
+    } catch (err) {
+      toast.error("Failed to delete account");
+      console.error("Delete account error:", err);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-brand">
       <Navigation />
-
       <main className="max-w-4xl mx-auto px-6 py-12">
         {/* Header */}
         <div className="flex items-center mb-8">
@@ -174,13 +168,10 @@ const handleDeleteAccount = async () => {
                   </AvatarFallback>
                 </Avatar>
                 <div>
-                  <Button variant="outline" size="sm">
+                  <Button variant="outline" size="sm" disabled>
                     <Camera className="h-4 w-4 mr-2" />
-                    Change Photo
+                    Change Photo (Coming soon)
                   </Button>
-                  <p className="text-sm text-muted-foreground mt-2">
-                    JPG, PNG or GIF. Max size 2MB.
-                  </p>
                 </div>
               </div>
 
@@ -211,13 +202,10 @@ const handleDeleteAccount = async () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  value={profileData.email}
-                  onChange={(e) => handleProfileChange("email", e.target.value)}
-                />
+                <Label>Email</Label>
+                <p className="text-sm text-muted-foreground">
+                  {profileData.email || "Not available"}
+                </p>
               </div>
 
               <div className="grid md:grid-cols-2 gap-6">
@@ -373,60 +361,6 @@ const handleDeleteAccount = async () => {
             </CardContent>
           </Card>
 
-          {/* Password Settings */}
-          <Card className="bg-white/95 backdrop-blur-sm border-0 shadow-2xl">
-            <CardHeader>
-              <CardTitle>Change Password</CardTitle>
-              <CardDescription>
-                Update your password to keep your account secure
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="currentPassword">Current Password</Label>
-                <Input
-                  id="currentPassword"
-                  type="password"
-                  value={passwordData.currentPassword}
-                  onChange={(e) =>
-                    handlePasswordChange("currentPassword", e.target.value)
-                  }
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="newPassword">New Password</Label>
-                <Input
-                  id="newPassword"
-                  type="password"
-                  value={passwordData.newPassword}
-                  onChange={(e) =>
-                    handlePasswordChange("newPassword", e.target.value)
-                  }
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="confirmPassword">Confirm New Password</Label>
-                <Input
-                  id="confirmPassword"
-                  type="password"
-                  value={passwordData.confirmPassword}
-                  onChange={(e) =>
-                    handlePasswordChange("confirmPassword", e.target.value)
-                  }
-                />
-              </div>
-
-              <Button
-                onClick={handleChangePassword}
-                className="bg-brand-blue hover:bg-brand-purple"
-              >
-                Change Password
-              </Button>
-            </CardContent>
-          </Card>
-
           {/* Danger Zone */}
           <Card className="bg-white/95 backdrop-blur-sm border-0 shadow-2xl border-red-200">
             <CardHeader>
@@ -443,10 +377,14 @@ const handleDeleteAccount = async () => {
                     Permanently delete your account and all data
                   </p>
                 </div>
-                <Button variant="destructive" size="sm" onClick={handleDeleteAccount}>
-  <Trash2 className="h-4 w-4 mr-2" />
-  Delete Account
-</Button>
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  onClick={handleDeleteAccount}
+                >
+                  <Trash2 className="h-4 w-4 mr-2" />
+                  Delete Account
+                </Button>
               </div>
             </CardContent>
           </Card>
